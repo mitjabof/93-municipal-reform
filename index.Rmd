@@ -1,7 +1,7 @@
 ---
-title: "Gov 50 Final Project"
-author: "Your Name Here"
-description: "My final project"
+title: "The impact of indirect gender quotas"
+author: "Mitja Bof"
+description: "Evidence from the 1993 Italian local elections law reform"
 output:
   distill::distill_article:
     self_contained: false
@@ -9,6 +9,9 @@ output:
 
 
 
-## Project thoughts
+## Introduction
 
-I am interested in exploring data related to...
+[TO BE WRITTEN]
+
+Important to note that this study only measures the direct (almost "mechanic")
+impact of the policy, which plausibly have other spillover effects that, in the medium and long-term, increase the magnitude of their impact (most notably cultural changes)
