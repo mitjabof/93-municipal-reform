@@ -1,0 +1,66 @@
+---
+title: "index-code"
+author: "Mitja Bof"
+date: '2022-12-04'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(kableExtra)
+```
+
+**Important: run all of main-analysis.rmd first**
+
+Table with findings
+
+```{r}
+mun_gender_may |> 
+  bind_cols(select(mun_gender_sec, -SESSO)) |>
+  bind_cols(select(mun_gender_cons, -SESSO)) |>
+  knitr::kable(col.names = 
+          c("Gender", "Post", "Pre", 
+            "Post", "Pre",
+            "Post", "Pre"),
+        digits = 2) |>
+  add_header_above(c(" ", "Mayors" = 2, "Local secretaries" = 2, "Council members" = 2)) |>
+  saveRDS("output/main-table.rds")
+```
+Impact barplot
+
+```{r}
+mun_gender_may |> 
+  bind_cols(select(mun_gender_sec, -SESSO)) |>
+  bind_cols(select(mun_gender_cons, -SESSO)) |>
+  filter(SESSO == "F") |>
+  mutate(Mayors = `Post-reform...2` - `Pre-reform...3`,
+         LS = `Post-reform...4` - `Pre-reform...5`,
+         CM = `Post-reform...6` - `Pre-reform...7`,) |>
+  select(Mayors, LS, CM) |>
+  pivot_longer(cols = Mayors:CM, names_to = "type", values_to = "impact") |>
+  saveRDS("output/impact-bar.RDS")
+  
+```
+Main regression tables.
+
+```{r}
+var_labs <- c("reformPost-reform" = "Reform", "refPost-reform" = "Reform",
+              "pop" = "Population",
+              "geoCenter" = "Central Italy", "geoSouth" = "Southern Italy",
+              "POPOLAZIONE_CENSITA" = "Population")
+
+model_table <- modelsummary::modelsummary(
+  list("Mayor (logistic)" = lr, 
+       "Local secretaries" = reg_prop_sec, 
+       "Council members" = reg_prop_counc),
+  gof_map = c("nobs", "r.squared", "adj.r.squared"),
+  coef_map = var_labs,
+  stars = TRUE,
+  fmt = "%.3f"
+)
+save(var_labs, model_table, file = "output/model-table.RData")
+```
+
+
+

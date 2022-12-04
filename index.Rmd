@@ -11,7 +11,77 @@ output:
 
 ## Introduction
 
-[TO BE WRITTEN]
+Gender underrepresentation in politics is a crucial issue in most advanced democracies. As of today, only 30 countries in the world have a woman as Head of State / Government, and only 26\% of national parliamentarians are women^[UN Women Facts and Figures: https://www.unwomen.org/en/what-we-do/leadership-and-political-participation/facts-and-figures#_edn1]. Policies explicitly aimed at reducing the gender gap in political representation have long been subject to extensive normative debate, and the positive question of their impact has generally held a marginal role in public discourse. The present study attempts to assess the impact of one of such policies. I study the causal effect of the 1993 local electoral law reform in Italy, which mandated that no more than two-thirds of canidadates for local councils be of the same gender. I first discuss a theoretical framework within which the policy can be understood, and then turn to the empirical question of impact evaluation.
 
-Important to note that this study only measures the direct (almost "mechanic")
-impact of the policy, which plausibly have other spillover effects that, in the medium and long-term, increase the magnitude of their impact (most notably cultural changes)
+
+## Reform and theoretical framework
+
+
+## Data
+
+To measure the percentage of women in elected offices in local councils, I exploit the publicly available Registry of local officials^["Anagrafe degli amministratori locali", Ministero dell'Interno: https://dait.interno.gov.it/elezioni/anagrafe-amministratori], provided by the Italian Ministry of the Interior. The annual datasets contain demographic information about local elected officials holding office at the time of the report at the municipal, provincial, and regional level. There are three main levels of officials covered in the data: mayors, local government secretaries ("assessori", the rough equivalent of ministers at the national level), and council members (the counterparts of national members of parliament). 
+
+### Data analysis process
+
+To obtain my final working dataset, I first merge the 1992 and 1993 tables and proceed to remove all duplicate entries (i.e. officials in office in both years). I then subset the data to limit my analysis to officials elected in the two year around the reform introduction (1992 and 1993). Subsequently, I create a dummy treatment variable based on the date of the mayoral election, which takes value 1 if the election took place after the reform, and 0 otherwise. I then aggregate individuals at the municipality and election cycle level, and assign the same treatment variable to all officials in the subgroup.
+
+## Empirical strategy
+
+The new local electoral law officially went into effect in April 1993. I consider local elections held up to a year before and after the introduction of the reform, and exploit the quasi-random assignment to treatment (election year) of different municipalities. I control for a set of relevant covariates (chiefly population size and geographical region) and document a statistically significant, albeit limited, effect of the reform on women representation in local politics.
+I assume that the residual effect of treatment can be fully ascribed to the causal impact of the reform. **Is this assumption sound?**
+
+I am interested in quantifying the impact of the reform on three main measures of gender equality, whose relevance was discussed in the previous section:
+
+1. The probability of a Mayor being a woman
+2. The share of female local secretaries (or probability???)
+3. The share of femal council members
+
+To estimate the first metric, I run a logistic regression on the gender binary variable, and present my results as odds ratios, i.e. the relative probability of a Mayor being a woman after the reform, based on the pre-reform baseline.
+
+The probability of being a woman is thus modeled by the equation
+
+$$Pr(\text{Woman mayor}) = \frac{1}{1 + e^{-(\beta_0 + \beta_1\text{Reform} + \cdots + \epsilon_i)}}$$
+and the metric of interest is given by $1 - e^{\beta_1}$, which is the excess probability of a "treated" Mayor being a woman that can be ascribed to the treatment alone.
+
+The estimate the latter two metrics, I run a linear regression with the share of women as the dependent variable.
+
+$$Y = \beta_0 + \beta_1\text{Reform} + \cdots + \epsilon_i$$
+
+I interpret the coefficients as causal effects of the reform. Below I discuss to what extent this assumption is warranted.
+
+
+
+## Findings
+
+Firstly, I explore the difference in women representation between the pre- and post-reform local election cycles. I find a +3 percentage points difference in the share of women elected as council members or nominated local secretaries. The delta for Mayors is negative and half as sizeable as the former two. Given the design of the reform, the finding is not surprising. The new electoral law only directly targeted candidates for local councils, while the role of gender in the selection mechanism for Mayors and local secretaries was left untouched. The additional boost in the female share of local secretaries is explained by the fact that those are often selected by the Mayor-elect among council members or candidates therefor.
+
+
+```{r echo=FALSE}
+library(tidyverse)
+readRDS("output/main-table.RDS")
+readRDS("output/impact-bar.RDS") |>
+  ggplot(aes(x = fct_reorder(type, impact), y = impact)) + 
+  geom_col() + 
+  labs(x = "Type of office",
+       y = "Change in share of women", 
+       title = "Differences in pre- and post-reform shares of women") + 
+  theme_classic() + 
+  scale_x_discrete(
+    labels = c("Mayors", "Council members", "Local secretaries")
+    )
+```
+
+These figures, however, should not be interpreted as causal effects prior to adjusting for potentially unbalanced covariates in the two samples.
+To address these concerns, I run the three regression models outlined above with the following variables as controls:
+
++ Population
++ Geographical area
+
+It is a well-established fact that urban electorates tend to vote more progressive, which in turn might be correlated with higher levels of gender equality in political representation. To account for this, I control for population size in my regression.
+Moreover, given the substantial socio-economic divide that exists in Italy, I also control for the geographical macro-area through two dummy varibales, Geo-Center and Geo-South.
+
+```{r echo = FALSE}
+load("output/model-table.RData")
+model_table
+```
+

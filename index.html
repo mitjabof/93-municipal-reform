@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/storico_amministratori_comuni31121992_0.csv","data/storico_amministratori_comuni31121993_0.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["data/storico_amministratori_comuni31121992_0.csv","data/storico_amministratori_comuni31121993_0.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-1-1.png","index_files/header-attrs-2.14/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","output/impact-bar.RDS","output/main-table.rds","output/model-table.RData"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1518,10 +1518,319 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-article">
 <h2 id="introduction">Introduction</h2>
-<p>[TO BE WRITTEN]</p>
-<p>Important to note that this study only measures the direct (almost “mechanic”)
-impact of the policy, which plausibly have other spillover effects that, in the medium and long-term, increase the magnitude of their impact (most notably cultural changes)</p>
+<p>Gender underrepresentation in politics is a crucial issue in most advanced democracies. As of today, only 30 countries in the world have a woman as Head of State / Government, and only 26% of national parliamentarians are women<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Policies explicitly aimed at reducing the gender gap in political representation have long been subject to extensive normative debate, and the positive question of their impact has generally held a marginal role in public discourse. The present study attempts to assess the impact of one of such policies. I study the causal effect of the 1993 local electoral law reform in Italy, which mandated that no more than two-thirds of canidadates for local councils be of the same gender. I first discuss a theoretical framework within which the policy can be understood, and then turn to the empirical question of impact evaluation.</p>
+<h2 id="reform-and-theoretical-framework">Reform and theoretical framework</h2>
+<h2 id="data">Data</h2>
+<p>To measure the percentage of women in elected offices in local councils, I exploit the publicly available Registry of local officials<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, provided by the Italian Ministry of the Interior. The annual datasets contain demographic information about local elected officials holding office at the time of the report at the municipal, provincial, and regional level. There are three main levels of officials covered in the data: mayors, local government secretaries (“assessori”, the rough equivalent of ministers at the national level), and council members (the counterparts of national members of parliament).</p>
+<h3 id="data-analysis-process">Data analysis process</h3>
+<p>To obtain my final working dataset, I first merge the 1992 and 1993 tables and proceed to remove all duplicate entries (i.e. officials in office in both years). I then subset the data to limit my analysis to officials elected in the two year around the reform introduction (1992 and 1993). Subsequently, I create a dummy treatment variable based on the date of the mayoral election, which takes value 1 if the election took place after the reform, and 0 otherwise. I then aggregate individuals at the municipality and election cycle level, and assign the same treatment variable to all officials in the subgroup.</p>
+<h2 id="empirical-strategy">Empirical strategy</h2>
+<p>The new local electoral law officially went into effect in April 1993. I consider local elections held up to a year before and after the introduction of the reform, and exploit the quasi-random assignment to treatment (election year) of different municipalities. I control for a set of relevant covariates (chiefly population size and geographical region) and document a statistically significant, albeit limited, effect of the reform on women representation in local politics.
+I assume that the residual effect of treatment can be fully ascribed to the causal impact of the reform. <strong>Is this assumption sound?</strong></p>
+<p>I am interested in quantifying the impact of the reform on three main measures of gender equality, whose relevance was discussed in the previous section:</p>
+<ol type="1">
+<li>The probability of a Mayor being a woman</li>
+<li>The share of female local secretaries (or probability???)</li>
+<li>The share of femal council members</li>
+</ol>
+<p>To estimate the first metric, I run a logistic regression on the gender binary variable, and present my results as odds ratios, i.e. the relative probability of a Mayor being a woman after the reform, based on the pre-reform baseline.</p>
+<p>The probability of being a woman is thus modeled by the equation</p>
+<p><span class="math display">\[Pr(\text{Woman mayor}) = \frac{1}{1 + e^{-(\beta_0 + \beta_1\text{Reform} + \cdots + \epsilon_i)}}\]</span>
+and the metric of interest is given by <span class="math inline">\(1 - e^{\beta_1}\)</span>, which is the excess probability of a “treated” Mayor being a woman that can be ascribed to the treatment alone.</p>
+<p>The estimate the latter two metrics, I run a linear regression with the share of women as the dependent variable.</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1\text{Reform} + \cdots + \epsilon_i\]</span></p>
+<p>I interpret the coefficients as causal effects of the reform. Below I discuss to what extent this assumption is warranted.</p>
+<h2 id="findings">Findings</h2>
+<p>Firstly, I explore the difference in women representation between the pre- and post-reform local election cycles. I find a +3 percentage points difference in the share of women elected as council members or nominated local secretaries. The delta for Mayors is negative and half as sizeable as the former two. Given the design of the reform, the finding is not surprising. The new electoral law only directly targeted candidates for local councils, while the role of gender in the selection mechanism for Mayors and local secretaries was left untouched. The additional boost in the female share of local secretaries is explained by the fact that those are often selected by the Mayor-elect among council members or candidates therefor.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Mayors
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Local secretaries
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Council members
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Gender
+</th>
+<th style="text-align:right;">
+Post
+</th>
+<th style="text-align:right;">
+Pre
+</th>
+<th style="text-align:right;">
+Post
+</th>
+<th style="text-align:right;">
+Pre
+</th>
+<th style="text-align:right;">
+Post
+</th>
+<th style="text-align:right;">
+Pre
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+F
+</td>
+<td style="text-align:right;">
+0.06
+</td>
+<td style="text-align:right;">
+0.06
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+M
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+</tr>
+</tbody>
+</table>
+<p><img src="index_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
+</div>
+<p>These figures, however, should not be interpreted as causal effects prior to adjusting for potentially unbalanced covariates in the two samples.
+To address these concerns, I run the three regression models outlined above with the following variables as controls:</p>
+<ul>
+<li>Population</li>
+<li>Geographical area</li>
+</ul>
+<p>It is a well-established fact that urban electorates tend to vote more progressive, which in turn might be correlated with higher levels of gender equality in political representation. To account for this, I control for population size in my regression.
+Moreover, given the substantial socio-economic divide that exists in Italy, I also control for the geographical macro-area through two dummy varibales, Geo-Center and Geo-South.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+Mayor (logistic)
+</th>
+<th style="text-align:center;">
+Local secretaries
+</th>
+<th style="text-align:center;">
+Council members
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Reform
+</td>
+<td style="text-align:center;">
+0.009
+</td>
+<td style="text-align:center;">
+0.060**
+</td>
+<td style="text-align:center;">
+0.080***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+(0.317)
+</td>
+<td style="text-align:center;">
+(0.019)
+</td>
+<td style="text-align:center;">
+(0.008)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Population
+</td>
+<td style="text-align:center;">
+-0.000
+</td>
+<td style="text-align:center;">
+-0.000
+</td>
+<td style="text-align:center;">
+-0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+(0.000)
+</td>
+<td style="text-align:center;">
+(0.000)
+</td>
+<td style="text-align:center;">
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Central Italy
+</td>
+<td style="text-align:center;">
+-0.617+
+</td>
+<td style="text-align:center;">
+-0.061**
+</td>
+<td style="text-align:center;">
+-0.069***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+(0.356)
+</td>
+<td style="text-align:center;">
+(0.020)
+</td>
+<td style="text-align:center;">
+(0.008)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Southern Italy
+</td>
+<td style="text-align:center;">
+-0.583**
+</td>
+<td style="text-align:center;">
+-0.049***
+</td>
+<td style="text-align:center;">
+-0.057***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;box-shadow: 0px 1px">
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(0.203)
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(0.013)
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(0.005)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Num.Obs.
+</td>
+<td style="text-align:center;">
+1795
+</td>
+<td style="text-align:center;">
+1543
+</td>
+<td style="text-align:center;">
+1778
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.017
+</td>
+<td style="text-align:center;">
+0.129
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 Adj.
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.015
+</td>
+<td style="text-align:center;">
+0.127
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>UN Women Facts and Figures: <a href="https://www.unwomen.org/en/what-we-do/leadership-and-political-participation/facts-and-figures#_edn1" class="uri">https://www.unwomen.org/en/what-we-do/leadership-and-political-participation/facts-and-figures#_edn1</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>“Anagrafe degli amministratori locali”, Ministero dell’Interno: <a href="https://dait.interno.gov.it/elezioni/anagrafe-amministratori" class="uri">https://dait.interno.gov.it/elezioni/anagrafe-amministratori</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -1529,6 +1838,15 @@ impact of the policy, which plausibly have other spillover effects that, in the 
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
