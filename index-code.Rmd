@@ -24,7 +24,8 @@ mun_gender_may |>
             "Post", "Pre",
             "Post", "Pre"),
         digits = 2) |>
-  add_header_above(c(" ", "Mayors" = 2, "Local secretaries" = 2, "Council members" = 2)) |>
+  add_header_above(c(" ", "Mayors" = 2, "Local secretaries" = 2, "Council members" = 2)) |> 
+  kable_styling(position = "center") |>
   saveRDS("output/main-table.rds")
 ```
 Impact barplot
@@ -48,12 +49,16 @@ Main regression tables.
 var_labs <- c("reformPost-reform" = "Reform", "refPost-reform" = "Reform",
               "pop" = "Population",
               "geoCenter" = "Central Italy", "geoSouth" = "Southern Italy",
-              "POPOLAZIONE_CENSITA" = "Population")
+              "POPOLAZIONE_CENSITA" = "Population",
+              "refPost-reform:geoCenter" = "Interaction: reform - center",
+              "refPost-reform:geoSouth" = "Interaction: reform - south"
+              )
 
 model_table <- modelsummary::modelsummary(
   list("Mayor (logistic)" = lr, 
        "Local secretaries" = reg_prop_sec, 
-       "Council members" = reg_prop_counc),
+       "Council members" = reg_prop_counc,
+       "Interaction model - Council members" = reg_prop_inter),
   gof_map = c("nobs", "r.squared", "adj.r.squared"),
   coef_map = var_labs,
   stars = TRUE,

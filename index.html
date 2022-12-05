@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/storico_amministratori_comuni31121992_0.csv","data/storico_amministratori_comuni31121993_0.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-1-1.png","index_files/header-attrs-2.14/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","output/impact-bar.RDS","output/main-table.rds","output/model-table.RData"]}
+  {"type":"character","attributes":{},"value":["data/storico_amministratori_comuni31121991_0.csv","data/storico_amministratori_comuni31121992_0.csv","data/storico_amministratori_comuni31121993_0.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-1-1.png","index_files/figure-html5/unnamed-chunk-3-1.png","index_files/figure-html5/unnamed-chunk-4-1.png","index_files/header-attrs-2.14/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","output/did-boots.RData","output/did-viz.RData","output/impact-bar.RDS","output/main-table.rds","output/model-table.RData"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1543,11 +1543,11 @@ and the metric of interest is given by <span class="math inline">\(1 - e^{\beta_
 <p>The estimate the latter two metrics, I run a linear regression with the share of women as the dependent variable.</p>
 <p><span class="math display">\[Y = \beta_0 + \beta_1\text{Reform} + \cdots + \epsilon_i\]</span></p>
 <p>I interpret the coefficients as causal effects of the reform. Below I discuss to what extent this assumption is warranted.</p>
-<h2 id="findings">Findings</h2>
+<h2 id="findings-and-discussion">Findings and discussion</h2>
 <p>Firstly, I explore the difference in women representation between the pre- and post-reform local election cycles. I find a +3 percentage points difference in the share of women elected as council members or nominated local secretaries. The delta for Mayors is negative and half as sizeable as the former two. Given the design of the reform, the finding is not surprising. The new electoral law only directly targeted candidates for local councils, while the role of gender in the selection mechanism for Mayors and local secretaries was left untouched. The additional boost in the female share of local secretaries is explained by the fact that those are often selected by the Mayor-elect among council members or candidates therefor.</p>
 <div class="layout-chunk" data-layout="l-body">
 <img src="index_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
-<table>
+<table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
@@ -1665,6 +1665,9 @@ Local secretaries
 <th style="text-align:center;">
 Council members
 </th>
+<th style="text-align:center;">
+Interaction model - Council members
+</th>
 </tr>
 </thead>
 <tbody>
@@ -1681,6 +1684,9 @@ Reform
 <td style="text-align:center;">
 0.080***
 </td>
+<td style="text-align:center;">
+0.070***
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1693,6 +1699,9 @@ Reform
 </td>
 <td style="text-align:center;">
 (0.008)
+</td>
+<td style="text-align:center;">
+(0.015)
 </td>
 </tr>
 <tr>
@@ -1708,6 +1717,8 @@ Population
 <td style="text-align:center;">
 -0.000
 </td>
+<td style="text-align:center;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1720,6 +1731,8 @@ Population
 </td>
 <td style="text-align:center;">
 (0.000)
+</td>
+<td style="text-align:center;">
 </td>
 </tr>
 <tr>
@@ -1735,6 +1748,9 @@ Central Italy
 <td style="text-align:center;">
 -0.069***
 </td>
+<td style="text-align:center;">
+-0.071*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1747,6 +1763,9 @@ Central Italy
 </td>
 <td style="text-align:center;">
 (0.008)
+</td>
+<td style="text-align:center;">
+(0.033)
 </td>
 </tr>
 <tr>
@@ -1762,18 +1781,78 @@ Southern Italy
 <td style="text-align:center;">
 -0.057***
 </td>
+<td style="text-align:center;">
+-0.070***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+(0.203)
+</td>
+<td style="text-align:center;">
+(0.013)
+</td>
+<td style="text-align:center;">
+(0.005)
+</td>
+<td style="text-align:center;">
+(0.017)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Interaction: reform - center
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(0.034)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Interaction: reform - south
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.014
+</td>
 </tr>
 <tr>
 <td style="text-align:left;box-shadow: 0px 1px">
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.203)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.013)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.005)
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(0.018)
 </td>
 </tr>
 <tr>
@@ -1789,6 +1868,9 @@ Num.Obs.
 <td style="text-align:center;">
 1778
 </td>
+<td style="text-align:center;">
+1779
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1802,6 +1884,9 @@ R2
 <td style="text-align:center;">
 0.129
 </td>
+<td style="text-align:center;">
+0.128
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1814,6 +1899,9 @@ R2 Adj.
 </td>
 <td style="text-align:center;">
 0.127
+</td>
+<td style="text-align:center;">
+0.126
 </td>
 </tr>
 </tbody>
@@ -1829,6 +1917,22 @@ R2 Adj.
 <p>The regression coefficients and their respective standard errors show that, after controlling for the geographical region, the treatment bears a larger effect on the gender makeup of council members than that of local secretaries, and has no statistically significant impact on the probability of a Mayor being female.
 The reform effectively increased the share of female council members by 8%, and that of female secretaries by 6%. These results are statistically significant at the .001 and .01 levels respectively.
 Geographical macroareas also bear an important influence on the outcome variable, with the Center and the South being associated with significantly lower female shares relative to the North baseline.</p>
+<h3 id="difference-in-difference-design">Difference-in-difference design</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span><span class='op'>(</span><span class='st'>"output/did-boots.RData"</span><span class='op'>)</span></span>
+<span><span class='va'>did_boot_viz</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
+</div>
+<p>Difference in differences visualization</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span><span class='op'>(</span><span class='st'>"output/did-viz.RData"</span><span class='op'>)</span></span>
+<span><span class='va'>did_sum_viz</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
 <h2 id="conclusion">Conclusion</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">

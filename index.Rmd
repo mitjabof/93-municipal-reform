@@ -54,7 +54,7 @@ I interpret the coefficients as causal effects of the reform. Below I discuss to
 
 
 
-## Findings
+## Findings and discussion
 
 Firstly, I explore the difference in women representation between the pre- and post-reform local election cycles. I find a +3 percentage points difference in the share of women elected as council members or nominated local secretaries. The delta for Mayors is negative and half as sizeable as the former two. Given the design of the reform, the finding is not surprising. The new electoral law only directly targeted candidates for local councils, while the role of gender in the selection mechanism for Mayors and local secretaries was left untouched. The additional boost in the female share of local secretaries is explained by the fact that those are often selected by the Mayor-elect among council members or candidates therefor.
 
@@ -93,6 +93,20 @@ model_table
 The regression coefficients and their respective standard errors show that, after controlling for the geographical region, the treatment bears a larger effect on the gender makeup of council members than that of local secretaries, and has no statistically significant impact on the probability of a Mayor being female.
 The reform effectively increased the share of female council members by 8\%, and that of female secretaries by 6\%. These results are statistically significant at the .001 and .01 levels respectively.
 Geographical macroareas also bear an important influence on the outcome variable, with the Center and the South being associated with significantly lower female shares relative to the North baseline.
+
+### Difference-in-difference design
+
+```{r}
+load("output/did-boots.RData")
+did_boot_viz
+```
+Difference in differences visualization
+
+```{r}
+load("output/did-viz.RData")
+did_sum_viz
+```
+
 
 ## Conclusion
 

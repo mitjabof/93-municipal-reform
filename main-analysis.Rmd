@@ -40,8 +40,8 @@ mun93 <- mun93 |> inner_join(mun_refs93, by = "DESCRIZIONE_COMUNE")
 
 ```{r}
 mun <- bind_rows(mun92, mun93)
-rm(mun92)
-rm(mun93)
+#rm(mun92)
+#rm(mun93)
 sub <- mun |> 
   select(CODICE_PROVINCIA, COGNOME, NOME, LIVELLO_CARICA, DATA_NOMINA)
 
@@ -230,6 +230,13 @@ mun_prop_sec <- mun |>
             geo = unique(geo))
 reg_prop_sec <- lm(prop_female ~ ref + pop + geo, data = mun_prop_sec)
 summary(reg_prop_sec)
+```
+
+Reg interaction
+
+```{r}
+reg_prop_inter <- lm(prop_female ~ ref*geo, data = mun_prop_counc)
+summary(reg_prop_inter)
 ```
 
 
