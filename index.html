@@ -1520,8 +1520,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="introduction">Introduction</h2>
 <p>Gender underrepresentation in politics is a crucial issue in most advanced democracies. As of today, only 30 countries in the world have a woman as Head of State / Government, and only 26% of national parliamentarians are women<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Policies explicitly aimed at reducing the gender gap in political representation have long been subject to extensive normative debate, and the positive question of their impact has generally held a marginal role in public discourse. The present study attempts to assess the impact of one of such policies. I study the causal effect of the 1993 local electoral law reform in Italy, which mandated that no more than two-thirds of canidadates for local councils be of the same gender. I first discuss a theoretical framework within which the policy can be understood, and then turn to the empirical question of impact evaluation.</p>
 <h2 id="reform-and-theoretical-framework">Reform and theoretical framework</h2>
+<p>In 1993, the Italian parliament passed a national reform concerning the electoral mechanism for local elections. The reform replaced a proportional system with a two-round, coalition-based one. Among the many provisions of the law, however, was one aimed at the reducing the staggering gender gap in political representation. As of 1992, women represented only X% of incumbent Mayors, and Y% of local council members. The gaps have kept shrinking since, but still remain considerably high at X_1 and Y_1 % respectively. While a plethora of factors have played a role in the past three decades, it is interesting to ask what fraction of the gap reduction can be ascribed to the reform itself. In practice, the reform mandated that no more than 2/3 of the candidates running for the city council be of the same gender.
+There are two ways of answering the question. The first merely interprets the reform from a long-term perspective. It posits that the effects of the reform will manifest themselves in a gradual fashion over the years, by way of incrementally changing cultural biases and political barriers to entry. It reasonably assumes that a first push towards gender equality will lead to a virtuous snowball effect.
+The second approach only considers the immediate, mechanic impact of the reform. While the former arguably offers a more thorough understanding of the phenomena at play, for the sake of practicality and warranted inference, this study will take the latter approach. I am thus interested in estimating the short-term, direct effects that the 2/3 mandate had on the share of Women holding local elected positions.</p>
 <h2 id="data">Data</h2>
-<p>To measure the percentage of women in elected offices in local councils, I exploit the publicly available Registry of local officials<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, provided by the Italian Ministry of the Interior. The annual datasets contain demographic information about local elected officials holding office at the time of the report at the municipal, provincial, and regional level. There are three main levels of officials covered in the data: mayors, local government secretaries (“assessori”, the rough equivalent of ministers at the national level), and council members (the counterparts of national members of parliament).</p>
+<p>To measure the percentage of women in elected offices in local councils, I exploit the publicly available Registry of local officials<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, provided by the Italian Ministry of the Interior. The annual datasets contain demographic information about local elected officials holding office at the time of the report at the municipal, provincial, and regional level, and allow for the design of an observational study measuring the variation in the gender makeup of local institutions following the reform. There are three main levels of officials covered in the data: mayors, local government secretaries (“assessori”, the rough equivalent of ministers at the national level), and council members (the counterparts of national members of parliament).</p>
 <h3 id="data-analysis-process">Data analysis process</h3>
 <p>To obtain my final working dataset, I first merge the 1992 and 1993 tables and proceed to remove all duplicate entries (i.e. officials in office in both years). I then subset the data to limit my analysis to officials elected in the two year around the reform introduction (1992 and 1993). Subsequently, I create a dummy treatment variable based on the date of the mayoral election, which takes value 1 if the election took place after the reform, and 0 otherwise. I then aggregate individuals at the municipality and election cycle level, and assign the same treatment variable to all officials in the subgroup.</p>
 <h2 id="empirical-strategy">Empirical strategy</h2>
@@ -1543,6 +1546,7 @@ and the metric of interest is given by <span class="math inline">\(1 - e^{\beta_
 <h2 id="findings">Findings</h2>
 <p>Firstly, I explore the difference in women representation between the pre- and post-reform local election cycles. I find a +3 percentage points difference in the share of women elected as council members or nominated local secretaries. The delta for Mayors is negative and half as sizeable as the former two. Given the design of the reform, the finding is not surprising. The new electoral law only directly targeted candidates for local councils, while the role of gender in the selection mechanism for Mayors and local secretaries was left untouched. The additional boost in the female share of local secretaries is explained by the fact that those are often selected by the Mayor-elect among council members or candidates therefor.</p>
 <div class="layout-chunk" data-layout="l-body">
+<img src="index_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
 <table>
 <thead>
 <tr>
@@ -1637,7 +1641,6 @@ M
 </tr>
 </tbody>
 </table>
-<p><img src="index_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
 <p>These figures, however, should not be interpreted as causal effects prior to adjusting for potentially unbalanced covariates in the two samples.
 To address these concerns, I run the three regression models outlined above with the following variables as controls:</p>
@@ -1823,6 +1826,10 @@ R2 Adj.
 </tfoot>
 </table>
 </div>
+<p>The regression coefficients and their respective standard errors show that, after controlling for the geographical region, the treatment bears a larger effect on the gender makeup of council members than that of local secretaries, and has no statistically significant impact on the probability of a Mayor being female.
+The reform effectively increased the share of female council members by 8%, and that of female secretaries by 6%. These results are statistically significant at the .001 and .01 levels respectively.
+Geographical macroareas also bear an important influence on the outcome variable, with the Center and the South being associated with significantly lower female shares relative to the North baseline.</p>
+<h2 id="conclusion">Conclusion</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
