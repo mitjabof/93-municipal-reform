@@ -1,0 +1,217 @@
+---
+title: "data-analysis"
+author: "Mitja Bof"
+date: '2022-12-08'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(infer)
+```
+
+Data import
+
+```{r}
+# After
+
+mun92 <- read_delim("data/storico_amministratori_comuni31121992_0.csv", 
+                    delim = ";") |> rowwise() |>
+  mutate(anno_elezione = as.integer(str_split(DATA_ELEZIONE, "/")[[1]][3]))
+mun_refs92 <- mun92 |> 
+  filter(DESCRIZIONE_CARICA == "Sindaco") |>
+  filter(anno_elezione == 1992) |>
+  mutate(reform = 0) |>
+  select(DESCRIZIONE_COMUNE, reform)
+
+mun92 <- mun92 |> inner_join(mun_refs92, by = "DESCRIZIONE_COMUNE") |>
+  mutate(period = 1)
+
+mun93 <- read_delim("data/storico_amministratori_comuni31121993_0.csv", 
+                    delim = ";") |> rowwise() |>
+  mutate(anno_elezione = as.integer(str_split(DATA_ELEZIONE, "/")[[1]][3]))
+
+mun_refs93 <- mun93 |> 
+  filter(DESCRIZIONE_CARICA == "Sindaco") |>
+  filter(anno_elezione == 1993) |>
+  mutate(reform = 1) |>
+  select(DESCRIZIONE_COMUNE, reform)
+
+mun93 <- mun93 |> inner_join(mun_refs93, by = "DESCRIZIONE_COMUNE") |>
+  mutate(period = 1)
+
+after <- bind_rows(mun92, mun93)
+rm(mun92, mun93)
+sub <- after |> 
+  select(CODICE_PROVINCIA, COGNOME, NOME, LIVELLO_CARICA, DATA_NOMINA)
+dup <- !duplicated(sub)
+after <- after[dup,]
+rm(sub, dup)
+
+# Before
+
+mun88 <- read_delim("data/storico_amministratori_comuni31121992_0.csv", 
+                    delim = ";") |> rowwise() |>
+  mutate(anno_elezione = as.integer(str_split(DATA_ELEZIONE, "/")[[1]][3]))
+
+mun88 <- mun88 |> inner_join(mun_refs93, by = "DESCRIZIONE_COMUNE") |>
+  mutate(period = 0)
+
+mun87 <- read_delim("data/storico_amministratori_comuni31121991_0.csv", 
+                    delim = ";") |> rowwise() |>
+  mutate(anno_elezione = as.integer(str_split(DATA_ELEZIONE, "/")[[1]][3]))
+
+mun87 <- mun87 |> inner_join(mun_refs92, by = "DESCRIZIONE_COMUNE") |>
+  mutate(period = 0)
+
+before <- bind_rows(mun87, mun88)
+rm(mun87, mun88)
+sub <- before |> 
+  select(CODICE_PROVINCIA, COGNOME, NOME, LIVELLO_CARICA, DATA_NOMINA)
+
+dup <- !duplicated(sub)
+before <- before[dup,]
+rm(sub, dup)
+```
+
+Bind datasets
+
+```{r}
+mun <- bind_rows(before, after)
+rm(before, after)
+
+vars <- c("DESCRIZIONE_REGIONE", "CODICE_COMUNE", "DESCRIZIONE_COMUNE",
+          "POPOLAZIONE_CENSITA", "MAGGIORITARIO_PROPORZIONALE", 
+          "CONSIGLIERI_SPETTANTI","SESSO", "LIVELLO_CARICA",
+          "DESCRIZIONE_CARICA", "anno_elezione", "reform", "period")
+
+south <- c("ABRUZZO", "MOLISE", "CAMPANIA", "PUGLIA", "BASILICATA", "CALABRIA",
+           "SICILIA", "SARDEGNA")
+center <- c("TOSCANA", "UMBRIA", "MARCHE", "LAZIO")
+
+north <- c("PIEMONTE", "VALLE D'AOSTA", "LOMBARDIA", "TRENTINO-ALTO ADIGE", 
+           "VENETO", "FRIULI-VENEZIA GIULIA", "LIGURIA", "EMILIA ROMAGNA")
+
+mun <- mun |> 
+  select(vars) |>
+  mutate(geo = case_when(
+    DESCRIZIONE_REGIONE %in% south ~ "South",
+    DESCRIZIONE_REGIONE %in% center ~ "Center",
+    DESCRIZIONE_REGIONE %in% north ~ "North",
+  )) |>
+  within(geo <- relevel(as.factor(geo), ref = "North"))
+```
+
+Gender tables
+
+```{r}
+mun_gender_cons <- mun |>
+  filter(LIVELLO_CARICA == 120 & period == 1) |>
+  drop_na(SESSO) |>
+  group_by(reform, SESSO) |>
+  summarize(n = n()) |>
+  mutate(prop = n / sum(n)) |>
+  select(-n) |>
+  pivot_wider(names_from = reform, values_from = prop) |>
+  relocate(`1`, .after = SESSO) |>
+  mutate(diff  = `1` - `0`)
+mun_gender_cons
+
+mun_gender_sec <- mun |>
+  filter(LIVELLO_CARICA == 50 & period == 1) |>
+  drop_na(SESSO) |>
+  group_by(reform, SESSO) |>
+  summarize(n = n()) |>
+  mutate(prop = n / sum(n)) |>
+  select(-n) |>
+  pivot_wider(names_from = reform, values_from = prop) |>
+  relocate(`1`, .after = SESSO) |>
+  mutate(diff  = `1` - `0`)
+mun_gender_sec
+
+mun_gender_may <- mun |>
+  filter(LIVELLO_CARICA == 10 & period == 1) |>
+  drop_na(SESSO) |>
+  group_by(reform, SESSO) |>
+  summarize(n = n()) |>
+  mutate(prop = n / sum(n)) |>
+  select(-n) |>
+  pivot_wider(names_from = reform, values_from = prop) |>
+  relocate(`1`, .after = SESSO) |>
+  mutate(diff  = `1` - `0`)
+mun_gender_may
+```
+
+Municipality level data
+
+```{r}
+prop_counc <- mun |> 
+  filter(LIVELLO_CARICA == 120) |>
+  mutate(gender = if_else(SESSO == "F", 1, 0)) |>
+  group_by(DESCRIZIONE_COMUNE, reform, period) |>
+  summarize(prop_female = mean(gender, na.rm = TRUE),
+            reform = unique(reform),
+            pop = max(POPOLAZIONE_CENSITA),
+            geo = unique(geo),
+            period = unique(period))
+
+prop_sec <- mun |> 
+  filter(LIVELLO_CARICA == 50) |>
+  mutate(gender = if_else(SESSO == "F", 1, 0)) |>
+  group_by(DESCRIZIONE_COMUNE, reform, period) |>
+  summarize(prop_female = mean(gender, na.rm = TRUE),
+            reform = unique(reform),
+            pop = max(POPOLAZIONE_CENSITA),
+            geo = unique(geo),
+            period = unique(period))
+```
+
+Regression 1 - DiD council members
+
+```{r}
+reg_did_counc <- lm(prop_female ~ period*reform + geo + pop, data = prop_counc)
+summary(reg_did_counc)
+
+rn <- lm(prop_female ~ period*reform + pop, data = filter(prop_counc, geo == "North"))
+summary(rn)
+
+rc <- lm(prop_female ~ period*reform + pop, data = filter(prop_counc, geo == "Center"))
+summary(rc)
+
+rs <- lm(prop_female ~ period*reform + pop, data = filter(prop_counc, geo == "South"))
+summary(rs)
+```
+
+DiD visualization
+
+```{r}
+did_viz <- prop_counc |>
+  pivot_wider(names_from = period, values_from = prop_female) |>
+  group_by(DESCRIZIONE_COMUNE) |>
+  summarize(before = mean(`0`, na.rm = TRUE),
+            after = mean(`1`, na.rm = TRUE),
+            diff = after - before,
+            geo = unique(geo),
+            reform = unique(reform)) |>
+  group_by(geo, reform) |>
+  summarize(Before = mean(before, na.rm = TRUE),
+            After = mean(after, na.rm = TRUE)) |>
+  pivot_longer(Before:After,
+               names_to = "Period",
+               values_to = "prop_female") |>
+  ggplot(aes(x = Period, y = prop_female)) +
+  geom_line(aes(color = as.factor(reform), group = as.factor(reform)), size = 1.3) + 
+  scale_x_discrete(limits = c("Before", "After")) + 
+  facet_wrap(~ geo) +
+  theme_classic() +
+  labs(
+    x = "Period",
+    y = "Share of female council members",
+    title = "Difference in Differences",
+    color = "Group"
+  ) +
+  scale_color_discrete(labels = c("Control", "Treatment"))
+save(did_viz, file = "output/did-viz.RData")
+```
+

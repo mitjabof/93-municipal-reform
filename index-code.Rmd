@@ -20,11 +20,11 @@ mun_gender_may |>
   bind_cols(select(mun_gender_sec, -SESSO)) |>
   bind_cols(select(mun_gender_cons, -SESSO)) |>
   knitr::kable(col.names = 
-          c("Gender", "Post", "Pre", 
-            "Post", "Pre",
-            "Post", "Pre"),
+          c("Gender", "Post", "Pre", "Diff.",
+            "Post", "Pre", "Diff.",
+            "Post", "Pre", "Diff."),
         digits = 2) |>
-  add_header_above(c(" ", "Mayors" = 2, "Local secretaries" = 2, "Council members" = 2)) |> 
+  add_header_above(c(" ", "Mayors" = 3, "Local secretaries" = 3, "Council members" = 3)) |> 
   kable_styling(position = "center") |>
   saveRDS("output/main-table.rds")
 ```
@@ -35,30 +35,27 @@ mun_gender_may |>
   bind_cols(select(mun_gender_sec, -SESSO)) |>
   bind_cols(select(mun_gender_cons, -SESSO)) |>
   filter(SESSO == "F") |>
-  mutate(Mayors = `Post-reform...2` - `Pre-reform...3`,
-         LS = `Post-reform...4` - `Pre-reform...5`,
-         CM = `Post-reform...6` - `Pre-reform...7`,) |>
+  mutate(Mayors = `1...2` - `0...3`,
+         LS = `1...5` - `0...6`,
+         CM = `1...8` - `0...9`,) |>
   select(Mayors, LS, CM) |>
   pivot_longer(cols = Mayors:CM, names_to = "type", values_to = "impact") |>
   saveRDS("output/impact-bar.RDS")
-  
 ```
 Main regression tables.
 
 ```{r}
-var_labs <- c("reformPost-reform" = "Reform", "refPost-reform" = "Reform",
-              "pop" = "Population",
-              "geoCenter" = "Central Italy", "geoSouth" = "Southern Italy",
-              "POPOLAZIONE_CENSITA" = "Population",
-              "refPost-reform:geoCenter" = "Interaction: reform - center",
-              "refPost-reform:geoSouth" = "Interaction: reform - south"
-              )
+var_labs <- c(
+  "(Intercept)", "period" = "Period (Before / After)", "reform" = "Year Pair (treatment)",
+  "period:reform" = "Interaction (DiD)", "geoCenter" = "Central region",
+  "geoSouth" = "Southern region", "pop" = "Population"
+)
 
 model_table <- modelsummary::modelsummary(
-  list("Mayor (logistic)" = lr, 
-       "Local secretaries" = reg_prop_sec, 
-       "Council members" = reg_prop_counc,
-       "Interaction model - Council members" = reg_prop_inter),
+  list("All regions" = reg_did_counc, 
+       "North" = rn, 
+       "Center" = rc,
+       "South" = rs),
   gof_map = c("nobs", "r.squared", "adj.r.squared"),
   coef_map = var_labs,
   stars = TRUE,
