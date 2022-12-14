@@ -215,3 +215,69 @@ did_viz <- prop_counc |>
 save(did_viz, file = "output/did-viz.RData")
 ```
 
+Logistic and linear regression on mayor:
+
+```{r}
+reg_mayor_data <- mun |>
+  filter(LIVELLO_CARICA == 10) |>
+  drop_na(SESSO) |>
+  mutate(gender = if_else(SESSO == "F", 1, 0))
+
+reg_mayor <- lm(gender ~ period*reform, data = reg_mayor_data)
+summary(reg_mayor)
+
+reg_mayor_geo <- lm(gender ~ period*reform + geo, data = reg_mayor_data)
+summary(reg_mayor_geo)
+
+logit_mayor <- glm(gender ~ period*reform + geo, data = reg_mayor_data,
+                   family = "binomial")
+summary(logit_mayor)
+exp(coef(logit_mayor))
+```
+
+Analysis of mayor share
+
+```{r}
+mun |> 
+  filter(LIVELLO_CARICA == 10) |>
+  drop_na(SESSO) |>
+  mutate(gender = if_else(SESSO == "F", 1, 0)) |>
+  group_by(geo, reform, period) |>
+  summarize(prop_female = mean(gender)) |>
+  pivot_wider(names_from = period, values_from = prop_female) |>
+  mutate(diff = `1` - `0`) |>
+  select(-c(`1`, `0`)) |>
+  pivot_wider(names_from = reform, values_from = diff) |>
+  mutate(diff_in_diff = `1` - `0`)
+```
+
+TODO:
+
+Descriptive statistics (as reported in the introduction)
+
+```{r eval = FALSE}
+# 1992
+
+read_delim("data/storico_amministratori_comuni31121992_0.csv",
+           delim = ";") |>
+  filter(LIVELLO_CARICA %in% c(10, 120)) |>
+  group_by(LIVELLO_CARICA) |>
+  summarize(prop_female = mean(SESSO == "F", na.rm = TRUE))
+
+# Current - data not in repository
+# Available at https://dait.interno.gov.it/elezioni/open-data/amministratori-locali-e-regionali-in-carica 
+# (Last update: 16 Nov 2022)
+
+read_delim("data/ammcom.csv",
+           delim = ";") |>
+  group_by(descrizione_carica) |>
+  summarize(prop_female = mean(sesso == "F", na.rm = TRUE))
+```
+
+This is a problem. Figure out why this is happening!
+
+```{r}
+mun |> filter(anno_elezione < 1993 & reform == 1 & period == 1) |> View()
+```
+
+

@@ -1,10 +1,14 @@
 ---
 title: "The effectiveness of candidate gender quotas"
-author: "Mitja Bof"
+author:
+  - first_name: "Mitja"
+    last_name: "Bof"
+    affiliation: Harvard University
 description: "Evidence from the 1993 Italian local elections law reform"
 output:
   distill::distill_article:
     self_contained: false
+    toc: true
 ---
 
 
@@ -16,7 +20,7 @@ Gender underrepresentation in politics is a crucial issue in most advanced democ
 
 ## Reform and theoretical framework
 
-In 1993, the Italian parliament passed a national reform concerning the electoral mechanism for local elections. The main legislative innovation of the reform was the replacement of a proportional system with a two-round, coalition-based one, and the direct election of Mayors and Regional Presidents. Among the many provisions of the law, however, was one aimed at the reducing the staggering gender gap in political representation. As of 1992, women represented only X\% of incumbent Mayors, and Y\% of local council members. The gaps have kept shrinking since, but still remain considerably high at X_1 and Y_1 \% respectively. While a plethora of factors have played a role in the past three decades, it is interesting to ask what fraction of the gap reduction can be ascribed to the reform itself. In practice, the reform mandated that no more than 2/3 of the candidates running for the city council be of the same gender. 
+In 1993, the Italian parliament passed a national reform concerning the electoral mechanism for local elections. The main legislative innovation of the reform was the replacement of a proportional system with a two-round, coalition-based one, and the direct election of Mayors and Regional Presidents. Among the many provisions of the law, however, was one aimed at the reducing the staggering gender gap in political representation. As of 1992, women represented only 3.7\% of incumbent Mayors, and 8.9\% of local council members. The gaps have kept shrinking since, but still remain considerably high at 15.2 and 34.3\% respectively. While a plethora of factors have played a role in the past three decades, it is interesting to ask what fraction of the gap reduction can be ascribed to the reform itself. In practice, the reform mandated that no more than 2/3 of the candidates running for the city council be of the same gender. 
 There are two ways of answering the question. The first merely interprets the reform from a long-term perspective. It posits that the effects of the reform will manifest themselves in a gradual fashion over the years, by way of incrementally changing cultural biases and political barriers to entry. It reasonably assumes that a first push towards gender equality will lead to a virtuous snowball effect.
 The second approach only considers the immediate, mechanic impact of the reform. While the former arguably offers a more thorough understanding of the phenomena at play, for the sake of practicality and warranted inference, this study will take the latter approach. I am thus interested in estimating the short-term, direct effects that the 2/3 mandate had on the share of Women holding local elected positions. 
 
@@ -26,7 +30,8 @@ To measure the percentage of women in elected offices in local councils, I explo
 
 ### Data analysis process
 
-To obtain my final working dataset, I first merge the 1992 and 1993 tables and proceed to remove all duplicate entries (i.e. officials in office in both years). I then subset the data to limit my analysis to officials elected in the two year around the reform introduction (1992 and 1993). Subsequently, I create a dummy treatment variable based on the date of the mayoral election, which takes value 1 if the election took place after the reform, and 0 otherwise. I then aggregate individuals at the municipality and election cycle level, and assign the same treatment variable to all officials in the subgroup.
+To obtain my final working dataset, I first merge the 1992 and 1993 tables and proceed to remove all duplicate entries (i.e. officials in office in both years). I then subset the data to limit my analysis to officials elected in the two year around the reform introduction (1992 and 1993). Subsequently, I create a dummy treatment variable based on the date of the mayoral election, which takes value 1 if the election took place after the reform, and 0 otherwise. I then aggregate individuals at the municipality and election cycle level, and assign the same treatment variable to all officials in the subgroup.\
+The replication files can be found in the project's [repository](https://github.com/mitjabof/93-municipal-reform)
 
 ## Empirical strategy
 
@@ -97,7 +102,7 @@ model_table
 ```
 
 The table presents the results of the regressions performed on the whole country and on the three macroareas.
-The main term of interest is the Interaction coefficient, which constitutes the DiD estimate. It suggests a treatment effect of more than 8 percentage points at the national level, and fluctuates slighlty across macroareas. The result is statistically significant at the 0.001 level.
+The main term of interest is the Interaction coefficient, which constitutes the DiD estimate. It suggests a treatment effect of more than 8 percentage points at the national level, and fluctuates slighlty across macroareas. The result is statistically significant at the 0.001 level. This implies that the reform almost doubled the share of female local council members.
 
 Another important finding is the null coefficient of the treatment variable, which entails that the difference in means between the treatment and the control group is close to zero. This supports the intitial working hypothesis of randomized assignment to treatment, which enables me to interpret the DiD estimate as evidence of a causal link between the reform and the higher share of female council members in treated municipalities.
 The Period coefficient is also negligible and not statistically significant, meaning that little to no progess in the outcome variable can be ascribed to the effect of time between the first and the second election.
@@ -109,5 +114,16 @@ did_viz
 ```
 
 
+To address the concern that a factor other than the effect of the reform might have played a role in the difference between the treatment and control group, thereby inflating the interaction term, I control for the share probability of a Mayor being female in the second electoral cycle between the two groups. Presumably, if the reform was the only driver of the difference in differences, no significant effect should be observed in the share of mayors, since the reform did not target mayor gender. Conversely, with confounding factors at play, such as a positive change in preferences for gender equality, the gender of Mayors would also be affected. Given my initial assumptions, I expect to find null results when regressing mayor gender on period and treatment.\
+Below is the regression table reporting the coefficient estimates, the standard errors, and the p-values (in brackets). I find no statistically significant effect of the interaction term on mayoral gender (p-value: 0.66). I can therefore conclude that the treatment only affected gender balance outcomes for council members, and was neutral towards mayors. This allows me to exclude a major source of concern for confounding bias, thereby fortifying my causal assumptions.\
+On a methodological note, the first regression model below is equivalent to a difference in means summary table, since all the variables are binary. 
+
+
+```{r echo = FALSE}
+mayor_table
+```
+
+
 ## Conclusion
 
+The present study evaluated the impact of a local electoral law reform with the aim of assessing the effectiveness of gender quotas in candidate lists in promoting a more equal gender representation in politics. Leveraging the random assignment to election year, I employed a difference-in-differences identification strategy to determine the effect of the reform on the female share of local council members. I found a statistically significant impact of the order of 8\%. In order to assure that my causal assumptions were sound, I addressed confounding bias concerns by measuring the difference in the share of female mayors before and after the reform, and found null results. While my research suggested that even soft quotas might have a substantial impact on gender representation, this study only assessed the short-term effects of such a reform. Intuitively, the policy is likely to have brought about a series of incremental cultural changes that progressively paid off in the long run. Further studies should aim at identifying these subtler effects in order to fully gauge the relevance of similar measures.

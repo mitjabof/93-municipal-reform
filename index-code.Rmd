@@ -46,7 +46,8 @@ Main regression tables.
 
 ```{r}
 var_labs <- c(
-  "(Intercept)", "period" = "Period (Before / After)", "reform" = "Year Pair (treatment)",
+  "(Intercept)" = "(Intercept)", "period" = "Period (Before / After)", 
+  "reform" = "Year Pair (treatment)",
   "period:reform" = "Interaction (DiD)", "geoCenter" = "Central region",
   "geoSouth" = "Southern region", "pop" = "Population"
 )
@@ -61,8 +62,25 @@ model_table <- modelsummary::modelsummary(
   stars = TRUE,
   fmt = "%.3f"
 )
-save(var_labs, model_table, file = "output/model-table.RData")
-```
 
+mayor_coef_map <- c("period" = "Period (Before / After)",
+                    "reform" = "Year Pair (treatment)",
+                    "period:reform" = "Inteaction effect (DiD)",
+                    "geoCenter" = "Central region",
+                    "geoSouth" = "Southern region")
+
+mayor_table <- modelsummary::modelsummary(
+  list("DiD" = reg_mayor,
+       "DiD - Geographic macroarea" = reg_mayor_geo),
+  gof_map = NA,
+  coef_map = mayor_coef_map,
+  fmt = "%.3f",
+  estimate = "{estimate}",
+  statistic = "{std.error} ({p.value})",
+  title = "Difference in Differences - Mayor Share"
+)
+save(var_labs, model_table, mayor_coef_map, mayor_table, 
+     file = "output/model-table.RData")
+```
 
 
