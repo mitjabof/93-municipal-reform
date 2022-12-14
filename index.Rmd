@@ -68,7 +68,7 @@ Firstly, I explore the difference in women representation between the pre- and p
 
 ```{r echo=FALSE}
 library(tidyverse)
-readRDS("output/impact-bar.RDS")
+
 readRDS("output/impact-bar.RDS") |>
   ggplot(aes(x = fct_reorder(type, impact), y = impact)) + 
   geom_col() + 
